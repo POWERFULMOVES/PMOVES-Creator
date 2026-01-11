@@ -1,0 +1,124 @@
+version: "3.9"
+
+# PMOVES-Creator (ComfyUI) Hybrid Standalone Mode
+# Run ComfyUI independently while optionally connecting to PMOVES.AI services
+#
+# Usage:
+#   docker compose up -d                    # Fully standalone
+#   export TENSORZERO_URL=http://host.docker.internal:3030
+#   docker compose up -d                    # Hybrid mode (with parent TensorZero)
+
+x-env-files: &env-files
+  env_file:
+    - path: .env
+      required: false
+
+services:
+  comfyui:
+    image: ghcr.io/powerfulmoves/comfyui:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    runtime: nvidia
+    restart: unless-stopped
+    <<: *env-files
+    environment:
+      # GPU Configuration
+      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
+      - CUDA_FORCE_PTX_JIT=${CUDA_FORCE_PTX_JIT:-1}
+      - TORCH_CUDA_ARCH_LIST=${TORCH_CUDA_ARCH_LIST:-5.0;5.2;6.0;6.1;7.0;7.5;8.0;8.6;9.0}
+      - NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES:-compute,utility}
+
+      # Hybrid Mode Detection
+      - DOCKED_MODE=${DOCKED_MODE:-false}
+      - PARENT_SYSTEM=${PARENT_SYSTEM:-PMOVES.AI}
+
+      # TensorZero Integration (for LLM-based workflows)
+      - TENSORZERO_URL=${TENSORZERO_URL:-http://host.docker.internal:3030}
+      - TENSORZERO_API_KEY=${TENSORZERO_API_KEY:-}
+      - TENSORZERO_CHAT_MODEL=${TENSORZERO_CHAT_MODEL:-qwen2_5_14b}
+
+      # Render Webhook (PMOVES.AI integration for output handling)
+      - RENDER_WEBHOOK_URL=${RENDER_WEBHOOK_URL:-http://host.docker.internal:8085/comfy/webhook}
+      - RENDER_WEBHOOK_SHARED_SECRET=${RENDER_WEBHOOK_SHARED_SECRET:-}
+
+      # MinIO Integration (for output storage)
+      - MINIO_ENDPOINT=${MINIO_ENDPOINT:-http://host.docker.internal:9000}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-}
+      - MINIO_BUCKET=${MINIO_BUCKET:-pmoves-comfyui}
+
+      # ComfyUI Configuration
+      - COMFYUI_HOST=${COMFYUI_HOST:-0.0.0.0}
+      - COMFYUI_PORT=${COMFYUI_PORT:-8188}
+      - COMFYUI_OUTPUT_DIR=${COMFYUI_OUTPUT_DIR:-/app/output}
+
+      # HuggingFace Cache (persist outside container)
+      - HF_HOME=/data/hf
+      - HUGGINGFACE_HUB_CACHE=/data/hf
+      - XDG_CACHE_HOME=/data/cache
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu, compute, utility]
+              count: ${GPU_COUNT:-all}
+
+    volumes:
+      # Persist models and outputs outside container
+      - comfyui-models:/app/models
+      - comfyui-output:/app/output
+      - comfyui-data:/data
+
+    ports:
+      - "${COMFYUI_PORT:-8188}:8188"
+
+    networks:
+      - pmoves_app
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8188/system_stats"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Optional: nginx reverse proxy for production
+  nginx:
+    image: nginx:alpine
+    <<: *env-files
+    restart: unless-stopped
+    profiles:
+      - production
+    environment:
+      - COMFYUI_UPSTREAM=comfyui:8188
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "${NGINX_PORT:-80}:80"
+      - "${NGINX_SSL_PORT:-443}:443"
+    networks:
+      - pmoves_app
+    depends_on:
+      comfyui:
+        condition: service_healthy
+
+networks:
+  pmoves_app:
+    external: true
+    name: pmoves_pmoves_app
+    # If external network doesn't exist, create it first:
+    # docker network create pmoves_pmoves_app --driver bridge
+
+volumes:
+  comfyui-models:
+    driver: local
+  comfyui-output:
+    driver: local
+  comfyui-data:
+    driver: local
