@@ -1,0 +1,5 @@
+import { parse } from "./parser.js";
+export default function (input) {
+    return parse(input);
+}
+//# sourceMappingURL=index.js.map

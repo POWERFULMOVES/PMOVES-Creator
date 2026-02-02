@@ -1,0 +1,18 @@
+import { assertDefinedComparisonOp } from "../assertions.js";
+import isEqual from "../is-equal.js";
+export default function compareObjects(a, b, op) {
+    switch (op) {
+        case "==":
+        case "<=": // does not offer < comparison
+        case ">=": // does not offer < comparison
+            return isEqual(a, b);
+        case "<": // does not offer < comparison
+        case ">": // does not offer < comparison
+            return false;
+        case "!=":
+            return !isEqual(a, b);
+        default:
+            assertDefinedComparisonOp(op);
+    }
+}
+//# sourceMappingURL=object.js.map

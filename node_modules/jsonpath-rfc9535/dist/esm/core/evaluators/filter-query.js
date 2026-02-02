@@ -1,0 +1,22 @@
+import { assertDefinedNodeType } from "../../utils/assertions.js";
+import { createNodeList } from "../results.js";
+import visitQuery from "../visitors/query.js";
+export default function evalFilterQuery(ctx, item, node) {
+    const list = createNodeList();
+    switch (node.value.type) {
+        case "RelQuery":
+            visitQuery(ctx, item.root, item.value, node.value, (value) => {
+                list.push(value);
+            });
+            break;
+        case "JsonPathQuery":
+            visitQuery(ctx, item.root, item.root, node.value, (value) => {
+                list.push(value);
+            });
+            break;
+        default:
+            assertDefinedNodeType(node.value);
+    }
+    return list;
+}
+//# sourceMappingURL=filter-query.js.map

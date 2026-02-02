@@ -1,0 +1,14 @@
+import { assertDefinedNodeType } from "../../utils/assertions.js";
+import evalFilterQuery from "./filter-query.js";
+import evalFunctionExpr from "./function-expr.js";
+export default function evalTestExpr(ctx, item, node) {
+    switch (node.expression.type) {
+        case "FilterQuery":
+            return evalFilterQuery(ctx, item, node.expression).length > 0;
+        case "FunctionExpr":
+            return evalFunctionExpr(ctx, item, node.expression) === true;
+        default:
+            assertDefinedNodeType(node.expression);
+    }
+}
+//# sourceMappingURL=test-expr.js.map

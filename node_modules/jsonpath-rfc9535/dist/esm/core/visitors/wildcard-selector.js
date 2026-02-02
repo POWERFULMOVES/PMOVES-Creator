@@ -1,0 +1,25 @@
+import { isPlainObject } from "../../utils/guards.js";
+import { joinPathWithKey } from "../path.js";
+export default function visitWildcardSelector(ctx, { root, path, value, index }) {
+    if (Array.isArray(value)) {
+        for (let i = 0; i < value.length; i++) {
+            ctx.stack.push({
+                root,
+                path: joinPathWithKey(path, i),
+                value: value[i],
+                index: index + 1,
+            });
+        }
+    }
+    else if (isPlainObject(value)) {
+        for (const key of Object.keys(value)) {
+            ctx.stack.push({
+                root,
+                path: joinPathWithKey(path, key),
+                value: value[key],
+                index: index + 1,
+            });
+        }
+    }
+}
+//# sourceMappingURL=wildcard-selector.js.map

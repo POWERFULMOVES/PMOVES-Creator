@@ -1,0 +1,17 @@
+import { assertDefinedComparisonOp } from "../assertions.js";
+export default function comparePrimitives(a, b, op) {
+    switch (op) {
+        case "==":
+        case "<=": // do not offer < comparison
+        case ">=": // do not offer < comparison
+            return a === b;
+        case "<":
+        case ">":
+            return false;
+        case "!=":
+            return !comparePrimitives(a, b, "==");
+        default:
+            assertDefinedComparisonOp(op);
+    }
+}
+//# sourceMappingURL=primitives.js.map

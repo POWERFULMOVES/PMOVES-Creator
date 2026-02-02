@@ -1,0 +1,35 @@
+import { isNodeList, } from "../../core/results.js";
+import { assertNever } from "../assertions.js";
+import getType from "../get-type.js";
+import compareArrays from "./array.js";
+import compareNodeLists from "./node-lists.js";
+import compareNothing from "./nothing.js";
+import compareNumbers from "./number.js";
+import compareObjects from "./object.js";
+import comparePrimitives from "./primitives.js";
+import compareStrings from "./string.js";
+export default function compare(a, b, op) {
+    const leftValue = isNodeList(a) && a.length === 1 ? a[0] : a;
+    const leftType = getType(leftValue);
+    const rightValue = isNodeList(b) && b.length === 1 ? b[0] : b;
+    switch (leftType) {
+        case "string":
+            return compareStrings(leftValue, rightValue, op);
+        case "number":
+            return compareNumbers(leftValue, rightValue, op);
+        case "boolean":
+        case "null":
+            return comparePrimitives(leftValue, rightValue, op);
+        case "object":
+            return compareObjects(leftValue, rightValue, op);
+        case "array":
+            return compareArrays(leftValue, rightValue, op);
+        case "Nothing":
+            return compareNothing(leftValue, rightValue, op);
+        case "NodeList":
+            return compareNodeLists(leftValue, rightValue, op);
+        default:
+            assertNever(leftType, "Unknown type");
+    }
+}
+//# sourceMappingURL=compare.js.map

@@ -1,0 +1,19 @@
+import { isNodeList } from "../../core/results.js";
+import { assertDefinedComparisonOp } from "../assertions.js";
+import isEqual from "../is-equal.js";
+export default function compareArrays(a, b, op) {
+    switch (op) {
+        case "==":
+        case ">=": // does not offer < comparison
+        case "<=": // does not offer < comparison
+            return !isNodeList(a) && !isNodeList(b) && isEqual(a, b);
+        case "<": // does not offer < comparison
+        case ">": // does not offer < comparison
+            return false;
+        case "!=":
+            return !compareArrays(a, b, "==");
+        default:
+            assertDefinedComparisonOp(op);
+    }
+}
+//# sourceMappingURL=array.js.map

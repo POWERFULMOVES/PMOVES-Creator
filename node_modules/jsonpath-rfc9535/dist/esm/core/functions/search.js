@@ -1,0 +1,14 @@
+import constructRegex from "./utils/construct-regex.js";
+export default {
+    declaration: function search(ctx, value, pattern) {
+        if (typeof value !== "string" || typeof pattern !== "string") {
+            return false;
+        }
+        return constructRegex(ctx, pattern)?.test(value) === true;
+    },
+    definition: {
+        parameters: ["ValueType", "ValueType"],
+        returnType: "LogicalType",
+    },
+};
+//# sourceMappingURL=search.js.map

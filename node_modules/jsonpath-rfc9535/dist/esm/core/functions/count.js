@@ -1,0 +1,14 @@
+import { isNodeList } from "../results.js";
+export default {
+    declaration: function count(ctx, value) {
+        if (isNodeList(value)) {
+            return value.length;
+        }
+        return 0;
+    },
+    definition: {
+        parameters: ["NodesType"],
+        returnType: "ValueType",
+    },
+};
+//# sourceMappingURL=count.js.map

@@ -1,0 +1,18 @@
+import { Nothing, isNodeList } from "../../core/results.js";
+import { assertDefinedComparisonOp } from "../assertions.js";
+export default function compareNothing(a, b, op) {
+    switch (op) {
+        case "==":
+        case "<=": // does not offer < comparison
+        case ">=": // does not offer < comparison
+            return b === Nothing || (isNodeList(b) && b.length === 0);
+        case "<": // does not offer < comparison
+        case ">": // does not offer < comparison
+            return false;
+        case "!=":
+            return !compareNothing(a, b, "==");
+        default:
+            assertDefinedComparisonOp(op);
+    }
+}
+//# sourceMappingURL=nothing.js.map

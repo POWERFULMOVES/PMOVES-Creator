@@ -1,0 +1,27 @@
+import { assertDefinedNodeType } from "../../utils/assertions.js";
+import { createNodeList } from "../results.js";
+import visitQuery from "../visitors/query.js";
+import evalFunctionExpr from "./function-expr.js";
+export default function evalComparable(ctx, item, node) {
+    switch (node.type) {
+        case "Literal":
+            return node.value;
+        case "RelSingularQuery":
+        case "AbsSingularQuery": {
+            const root = node.type === "RelSingularQuery" ? item.value : item.root;
+            if (node.segments.length === 0) {
+                return root;
+            }
+            const nodeList = createNodeList();
+            visitQuery(ctx, item.root, root, node, (v) => {
+                nodeList.push(v);
+            });
+            return nodeList;
+        }
+        case "FunctionExpr":
+            return evalFunctionExpr(ctx, item, node);
+        default:
+            assertDefinedNodeType(node);
+    }
+}
+//# sourceMappingURL=comparable.js.map

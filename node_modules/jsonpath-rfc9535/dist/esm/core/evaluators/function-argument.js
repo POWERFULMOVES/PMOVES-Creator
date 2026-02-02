@@ -1,0 +1,22 @@
+import { assertDefinedNodeType } from "../../utils/assertions.js";
+import evalFilterQuery from "./filter-query.js";
+import evalFunctionExpr from "./function-expr.js";
+import evalLogicalExpr from "./logical-expr.js";
+export default function evalFunctionArgument(ctx, item, node) {
+    switch (node.type) {
+        case "FunctionExpr":
+            return evalFunctionExpr(ctx, item, node);
+        case "FilterQuery":
+            return evalFilterQuery(ctx, item, node);
+        case "LogicalNotExpr":
+        case "LogicalAndExpr":
+        case "LogicalOrExpr":
+        case "TestExpr":
+            return evalLogicalExpr(ctx, item, node);
+        case "Literal":
+            return node.value;
+        default:
+            assertDefinedNodeType(node);
+    }
+}
+//# sourceMappingURL=function-argument.js.map

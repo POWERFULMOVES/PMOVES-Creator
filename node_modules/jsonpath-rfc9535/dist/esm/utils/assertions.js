@@ -1,0 +1,12 @@
+export function assertDefinedNodeType(node) {
+    throw new TypeError(
+    // biome-ignore lint/complexity/useLiteralKeys: type exhaustiveness
+    `Unexpected node type: ${node["type"]}`);
+}
+export function assertDefinedComparisonOp(op) {
+    throw new TypeError(`Unexpected comparison operator: ${op}`);
+}
+export function assertNever(_, message) {
+    throw new Error(message);
+}
+//# sourceMappingURL=assertions.js.map

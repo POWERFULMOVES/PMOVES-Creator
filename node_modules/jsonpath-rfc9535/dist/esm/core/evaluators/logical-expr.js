@@ -1,0 +1,22 @@
+import { assertDefinedNodeType } from "../../utils/assertions.js";
+import evalComparisonExpr from "./comparison-expr.js";
+import evalTestExpr from "./test-expr.js";
+export default function evalLogicalExpr(ctx, item, node) {
+    switch (node.type) {
+        case "LogicalNotExpr":
+            return !evalLogicalExpr(ctx, item, node.expression);
+        case "LogicalAndExpr":
+            return (evalLogicalExpr(ctx, item, node.left) &&
+                evalLogicalExpr(ctx, item, node.right));
+        case "LogicalOrExpr":
+            return (evalLogicalExpr(ctx, item, node.left) ||
+                evalLogicalExpr(ctx, item, node.right));
+        case "TestExpr":
+            return evalTestExpr(ctx, item, node);
+        case "ComparisonExpr":
+            return evalComparisonExpr(ctx, item, node);
+        default:
+            assertDefinedNodeType(node);
+    }
+}
+//# sourceMappingURL=logical-expr.js.map

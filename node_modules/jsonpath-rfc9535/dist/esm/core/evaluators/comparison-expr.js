@@ -1,0 +1,8 @@
+import compare from "../../utils/comparers/compare.js";
+import evalComparable from "./comparable.js";
+export default function evalComparisonExpr(ctx, item, node) {
+    const leftValue = evalComparable(ctx, item, node.left);
+    const rightValue = evalComparable(ctx, item, node.right);
+    return compare(leftValue, rightValue, node.op);
+}
+//# sourceMappingURL=comparison-expr.js.map

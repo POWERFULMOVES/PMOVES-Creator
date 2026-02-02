@@ -1,0 +1,12 @@
+import { joinPathWithKey } from "../path.js";
+export default function visitMemberNameShorthand(ctx, { root, path, value, index }, node) {
+    if (Object.hasOwn(value, node.value)) {
+        ctx.stack.push({
+            root,
+            path: joinPathWithKey(path, node.value),
+            value: value[node.value],
+            index: index + 1,
+        });
+    }
+}
+//# sourceMappingURL=member-name-shorthand.js.map
