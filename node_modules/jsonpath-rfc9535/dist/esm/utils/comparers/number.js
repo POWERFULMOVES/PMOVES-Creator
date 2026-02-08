@@ -1,0 +1,21 @@
+import { assertDefinedComparisonOp } from "../assertions.js";
+export default function compareNumbers(a, b, op) {
+    switch (op) {
+        case "==":
+            return a === b;
+        case "<":
+            return typeof b === "number" && a < b;
+        case "!=":
+            return !compareNumbers(a, b, "==");
+        case "<=":
+            return compareNumbers(a, b, "<") || compareNumbers(a, b, "==");
+        case ">":
+            return typeof b === "number" && compareNumbers(b, a, "<");
+        case ">=":
+            return ((typeof b === "number" && compareNumbers(b, a, "<")) ||
+                compareNumbers(a, b, "=="));
+        default:
+            assertDefinedComparisonOp(op);
+    }
+}
+//# sourceMappingURL=number.js.map

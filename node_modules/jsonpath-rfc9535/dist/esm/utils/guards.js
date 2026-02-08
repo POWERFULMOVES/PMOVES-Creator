@@ -1,0 +1,10 @@
+export function isPlainObject(value) {
+    if (typeof value !== "object" || value === null) {
+        return false;
+    }
+    const prototype = Object.getPrototypeOf(value);
+    return prototype === null || prototype === Object.prototype;
+}
+export const isStackItemWithArrayValue = (item) => Array.isArray(item.value);
+export const isStackItemWithObjectValue = (item) => isPlainObject(item.value);
+//# sourceMappingURL=guards.js.map

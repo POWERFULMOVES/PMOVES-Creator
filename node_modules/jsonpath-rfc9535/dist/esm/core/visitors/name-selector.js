@@ -1,0 +1,12 @@
+import { joinPathWithKey } from "../path.js";
+export default function visitNameSelector(ctx, { root, path, value, index }, node) {
+    if (Object.hasOwn(value, node.value)) {
+        ctx.stack.push({
+            root,
+            path: joinPathWithKey(path, node.value),
+            value: value[node.value],
+            index: index + 1,
+        });
+    }
+}
+//# sourceMappingURL=name-selector.js.map

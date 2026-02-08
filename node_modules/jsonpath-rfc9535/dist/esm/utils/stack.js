@@ -1,0 +1,28 @@
+export class Stack {
+    head = null;
+    tail = null;
+    size = 0;
+    push(element) {
+        const newNode = { value: element, next: null };
+        if (this.tail !== null) {
+            this.tail.next = newNode;
+        }
+        this.tail = newNode;
+        if (this.head === null) {
+            this.head = newNode;
+        }
+        this.size++;
+    }
+    pop() {
+        if (this.head === null)
+            return;
+        const value = this.head.value;
+        this.head = this.head.next;
+        if (this.head === null) {
+            this.tail = null;
+        }
+        this.size--;
+        return value;
+    }
+}
+//# sourceMappingURL=stack.js.map

@@ -1,0 +1,53 @@
+const EMPTY_PATH = [];
+export function joinPathWithKey(path, key) {
+    if (path === EMPTY_PATH) {
+        return EMPTY_PATH;
+    }
+    if (typeof key === "number") {
+        return [...path, key];
+    }
+    return [...path, toNormalizedKey(key)];
+}
+export function getInitialPath(capturePaths) {
+    return capturePaths ? [] : EMPTY_PATH;
+}
+const ESCAPE_REGEX = 
+// biome-ignore lint/suspicious/noControlCharactersInRegex: we need control characters to escape Unicode characters
+/[\u0000-\u001f'\\]/g;
+function escapeValue(ch) {
+    const code = ch.charCodeAt(0);
+    switch (code) {
+        case 0x8 /* backspace */:
+            return "\\b";
+        case 0xc /* form feed */:
+            return "\\f";
+        case 0xa /* line feed */:
+            return "\\n";
+        case 0xd /* carriage return */:
+            return "\\r";
+        case 0x9 /* horizontal tab */:
+            return "\\t";
+        case 0x27 /* apostrophe */:
+            return "\\'";
+        case 0x5c /* backslash */:
+            return "\\\\";
+        default:
+            return `\\u${code.toString(16).padStart(4, "0")}`;
+    }
+}
+export function toNormalizedKey(key) {
+    return key.replace(ESCAPE_REGEX, escapeValue);
+}
+export function toNormalizedPath(path) {
+    let normalizedPath = "$";
+    for (const key of path) {
+        if (typeof key === "number") {
+            normalizedPath += `[${key}]`;
+        }
+        else {
+            normalizedPath += `['${key}']`;
+        }
+    }
+    return normalizedPath;
+}
+//# sourceMappingURL=path.js.map

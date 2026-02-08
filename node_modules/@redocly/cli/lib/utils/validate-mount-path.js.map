@@ -1,0 +1,1 @@
+{"version":3,"file":"validate-mount-path.js","sourceRoot":"","sources":["../../src/utils/validate-mount-path.ts"],"names":[],"mappings":"AAAA,MAAM,UAAU,iBAAiB,CAAC,KAAa;IAC7C,IAAI,CAAC,KAAK,IAAI,KAAK,KAAK,GAAG,EAAE,CAAC;QAC5B,MAAM,IAAI,KAAK,CACb,4FAA4F,CAC7F,CAAC;IACJ,CAAC;IACD,OAAO,KAAK,CAAC;AACf,CAAC"}

@@ -1,0 +1,48 @@
+import getType from "./get-type.js";
+function isEqualArray(a, b) {
+    if (a.length !== b.length) {
+        return false;
+    }
+    for (let i = 0; i < a.length; i++) {
+        if (!isEqual(a[i], b[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+function isEqualObject(a, b) {
+    const aKeys = Object.keys(a);
+    const bKeys = Object.keys(b);
+    if (aKeys.length !== bKeys.length) {
+        return false;
+    }
+    for (const key of aKeys) {
+        if (!Object.hasOwn(b, key)) {
+            return false;
+        }
+        if (!isEqual(a[key], b[key])) {
+            return false;
+        }
+    }
+    return true;
+}
+export default function isEqual(left, right) {
+    if (getType(left) !== getType(right)) {
+        return false;
+    }
+    switch (getType(left)) {
+        case "string":
+        case "number":
+        case "boolean":
+        case "null":
+            return left === right;
+        case "object":
+            return isEqualObject(left, right);
+        case "array":
+        case "NodeList":
+            return isEqualArray(left, right);
+        default:
+            return false;
+    }
+}
+//# sourceMappingURL=is-equal.js.map

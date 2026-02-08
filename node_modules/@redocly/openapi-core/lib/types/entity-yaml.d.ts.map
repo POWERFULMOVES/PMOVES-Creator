@@ -1,0 +1,1 @@
+{"version":3,"file":"entity-yaml.d.ts","sourceRoot":"","sources":["../../src/types/entity-yaml.ts"],"names":[],"mappings":"AAGA,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,mBAAmB,CAAC;AACpD,OAAO,KAAK,EAAE,QAAQ,EAAE,MAAM,YAAY,CAAC;AAE3C,eAAO,MAAM,yBAAyB,SAAS,CAAC;AAEhD,wBAAgB,iBAAiB,CAC/B,YAAY,EAAE,UAAU,EACxB,mBAAmB,EAAE,UAAU,GAC9B,MAAM,CAAC,MAAM,EAAE,QAAQ,CAAC,CAuB1B"}

@@ -1,0 +1,19 @@
+import evalComparisonExpr from "../evaluators/comparison-expr.js";
+import evalLogicalExpr from "../evaluators/logical-expr.js";
+export default function visitFilterSelector(ctx, item, node) {
+    if (node.value.type === "ComparisonExpr") {
+        if (!evalComparisonExpr(ctx, item, node.value)) {
+            return;
+        }
+    }
+    else if (!evalLogicalExpr(ctx, item, node.value)) {
+        return;
+    }
+    ctx.stack.push({
+        root: item.root,
+        path: item.path,
+        value: item.value,
+        index: item.index + 1,
+    });
+}
+//# sourceMappingURL=filter-selector.js.map

@@ -1,0 +1,25 @@
+import { isPlainObject } from "../utils/guards.js";
+const nodeLists = new WeakSet();
+export const isNodeList = (value) => {
+    return typeof value === "object" && value !== null && nodeLists.has(value);
+};
+export const isJsonValue = (value) => {
+    switch (typeof value) {
+        case "string":
+        case "number":
+        case "boolean":
+            return true;
+        case "object":
+            return value === null || isPlainObject(value) || isArray(value);
+        default:
+            return false;
+    }
+};
+export const isArray = (value) => Array.isArray(value) && !isNodeList(value);
+export const createNodeList = () => {
+    const list = [];
+    nodeLists.add(list);
+    return list;
+};
+export const Nothing = Symbol("Nothing");
+//# sourceMappingURL=results.js.map

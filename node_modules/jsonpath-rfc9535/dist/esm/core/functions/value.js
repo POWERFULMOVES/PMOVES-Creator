@@ -1,0 +1,14 @@
+import { Nothing } from "../results.js";
+export default {
+    declaration: function value(ctx, nodes) {
+        if (nodes.length === 1) {
+            return nodes[0];
+        }
+        return Nothing;
+    },
+    definition: {
+        parameters: ["NodesType"],
+        returnType: "ValueType",
+    },
+};
+//# sourceMappingURL=value.js.map

@@ -1,0 +1,11 @@
+import type { TestContext, JsonLogs, WorkflowExecutionResult } from '@redocly/respect-core';
+export declare function composeJsonLogsFiles(filesResult: {
+    file: string;
+    totalRequests: number;
+    totalTimeMs: number;
+    executedWorkflows: WorkflowExecutionResult[];
+    ctx: TestContext;
+    globalTimeoutError: boolean;
+    secretValues?: string[];
+}[]): JsonLogs['files'];
+//# sourceMappingURL=json-logs.d.ts.map

@@ -1,0 +1,33 @@
+import _exec from "./core/exec.js";
+import { toNormalizedPath } from "./core/path.js";
+const DEFAULT_OPTIONS = {
+    capturePaths: true,
+};
+export function query(input, expression) {
+    const values = [];
+    _exec(input, expression, { capturePaths: false }, (value) => {
+        values.push(value);
+    });
+    return values;
+}
+export function paths(input, expression) {
+    const paths = [];
+    _exec(input, expression, DEFAULT_OPTIONS, (_, path) => {
+        paths.push(toNormalizedPath(path));
+    });
+    return paths;
+}
+export function exec(input, expression, cb) {
+    _exec(input, expression, DEFAULT_OPTIONS, cb);
+}
+export function batchExec(input, expressionToCallback, errorCallback) {
+    for (const [expression, cb] of expressionToCallback) {
+        try {
+            exec(input, expression, cb);
+        }
+        catch (e) {
+            errorCallback?.(e instanceof Error ? e : new Error(String(e)), expression);
+        }
+    }
+}
+//# sourceMappingURL=index.js.map

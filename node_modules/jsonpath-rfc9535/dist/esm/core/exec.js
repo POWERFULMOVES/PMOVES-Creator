@@ -1,0 +1,25 @@
+import parse from "../parser/index.js";
+import { Stack } from "../utils/stack.js";
+import count from "./functions/count.js";
+import length from "./functions/length.js";
+import match from "./functions/match.js";
+import search from "./functions/search.js";
+import value from "./functions/value.js";
+import visitQuery from "./visitors/query.js";
+export default function exec(input, expression, opts, cb) {
+    const ctx = {
+        cache: new Map(),
+        capturePaths: opts.capturePaths,
+        functions: {
+            count,
+            search,
+            value,
+            match,
+            length,
+        },
+        regexp: "i-regexp",
+        stack: new Stack(),
+    };
+    visitQuery(ctx, input, input, parse(expression), cb);
+}
+//# sourceMappingURL=exec.js.map
