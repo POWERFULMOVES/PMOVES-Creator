@@ -1,4 +1,0 @@
-import { HttpsProxyAgent } from 'https-proxy-agent';
-export declare function getProxyUrl(): string | undefined;
-export declare function getProxyAgent(): HttpsProxyAgent<string> | undefined;
-//# sourceMappingURL=proxy-agent.d.ts.map

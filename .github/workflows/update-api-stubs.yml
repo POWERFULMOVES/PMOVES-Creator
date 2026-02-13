@@ -36,11 +36,19 @@ jobs:
         run: |
           datamodel-codegen --use-subclass-enum --input filtered-openapi.yaml --output comfy_api_nodes/apis/__init__.py --output-model-type pydantic_v2.BaseModel
       
-      - name: Check for changes
+      - name: Check for meaningful changes
         id: git-check
         run: |
-          git diff --exit-code comfy_api_nodes/apis || echo "changes=true" >> $GITHUB_OUTPUT
-      
+          # Only detect actual content changes, not timestamp-only diffs
+          if git diff --exit-code comfy_api_nodes/apis/__init__.py; then
+            echo "changes=false" >> $GITHUB_OUTPUT
+          else
+            # Verify it's not just whitespace/formatting
+            DIFF_LINES=$(git diff --stat comfy_api_nodes/apis/__init__.py | tail -1)
+            echo "Diff summary: $DIFF_LINES"
+            echo "changes=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Create Pull Request
         if: steps.git-check.outputs.changes == 'true'
         uses: peter-evans/create-pull-request@v5
@@ -49,8 +57,9 @@ jobs:
           title: 'Update API models from api.comfy.org'
           body: |
             This PR updates the API models based on the latest api.comfy.org OpenAPI specification.
-            
-            Generated automatically by the a Github workflow.
+
+            Generated automatically by a GitHub workflow.
           branch: update-api-stubs
           delete-branch: true
           base: ${{ github.event.repository.default_branch }}
+          add-paths: comfy_api_nodes/apis/
