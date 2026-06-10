@@ -1,7 +1,7 @@
 import torch
 from typing_extensions import override
 from comfy_api.latest import IO, ComfyExtension
-from comfy_api_nodes.apis.pixverse_api import (
+from comfy_api_nodes.apis.pixverse import (
     PixverseTextVideoRequest,
     PixverseImageVideoRequest,
     PixverseTransitionVideoRequest,
@@ -53,7 +53,7 @@ class PixverseTemplateNode(IO.ComfyNode):
         return IO.Schema(
             node_id="PixverseTemplateNode",
             display_name="PixVerse Template",
-            category="api node/video/PixVerse",
+            category="partner/video/PixVerse",
             inputs=[
                 IO.Combo.Input("template", options=list(pixverse_templates.keys())),
             ],
@@ -74,7 +74,7 @@ class PixverseTextToVideoNode(IO.ComfyNode):
         return IO.Schema(
             node_id="PixverseTextToVideoNode",
             display_name="PixVerse Text to Video",
-            category="api node/video/PixVerse",
+            category="partner/video/PixVerse",
             description="Generates videos based on prompt and output_size.",
             inputs=[
                 IO.String.Input(
@@ -128,6 +128,7 @@ class PixverseTextToVideoNode(IO.ComfyNode):
                 IO.Hidden.unique_id,
             ],
             is_api_node=True,
+            price_badge=PRICE_BADGE_VIDEO,
         )
 
     @classmethod
@@ -191,7 +192,7 @@ class PixverseImageToVideoNode(IO.ComfyNode):
         return IO.Schema(
             node_id="PixverseImageToVideoNode",
             display_name="PixVerse Image to Video",
-            category="api node/video/PixVerse",
+            category="partner/video/PixVerse",
             description="Generates videos based on prompt and output_size.",
             inputs=[
                 IO.Image.Input("image"),
@@ -242,6 +243,7 @@ class PixverseImageToVideoNode(IO.ComfyNode):
                 IO.Hidden.unique_id,
             ],
             is_api_node=True,
+            price_badge=PRICE_BADGE_VIDEO,
         )
 
     @classmethod
@@ -308,7 +310,7 @@ class PixverseTransitionVideoNode(IO.ComfyNode):
         return IO.Schema(
             node_id="PixverseTransitionVideoNode",
             display_name="PixVerse Transition Video",
-            category="api node/video/PixVerse",
+            category="partner/video/PixVerse",
             description="Generates videos based on prompt and output_size.",
             inputs=[
                 IO.Image.Input("first_frame"),
@@ -355,6 +357,7 @@ class PixverseTransitionVideoNode(IO.ComfyNode):
                 IO.Hidden.unique_id,
             ],
             is_api_node=True,
+            price_badge=PRICE_BADGE_VIDEO,
         )
 
     @classmethod
@@ -414,6 +417,33 @@ class PixverseTransitionVideoNode(IO.ComfyNode):
             estimated_duration=AVERAGE_DURATION_T2V,
         )
         return IO.NodeOutput(await download_url_to_video_output(response_poll.Resp.url))
+
+
+PRICE_BADGE_VIDEO = IO.PriceBadge(
+    depends_on=IO.PriceBadgeDepends(widgets=["duration_seconds", "quality", "motion_mode"]),
+    expr="""
+    (
+      $prices := {
+        "5": {
+          "1080p": {"normal": 1.2, "fast": 1.2},
+          "720p": {"normal": 0.6, "fast": 1.2},
+          "540p": {"normal": 0.45, "fast": 0.9},
+          "360p": {"normal": 0.45, "fast": 0.9}
+        },
+        "8": {
+          "1080p": {"normal": 1.2, "fast": 1.2},
+          "720p": {"normal": 1.2, "fast": 1.2},
+          "540p": {"normal": 0.9, "fast": 1.2},
+          "360p": {"normal": 0.9, "fast": 1.2}
+        }
+      };
+      $durPrices := $lookup($prices, $string(widgets.duration_seconds));
+      $qualityPrices := $lookup($durPrices, widgets.quality);
+      $price := $lookup($qualityPrices, widgets.motion_mode);
+      {"type":"usd","usd": $price ? $price : 0.9}
+    )
+    """,
+)
 
 
 class PixVerseExtension(ComfyExtension):

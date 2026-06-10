@@ -9,7 +9,7 @@ class SetUnionControlNetType(io.ComfyNode):
     def define_schema(cls):
         return io.Schema(
             node_id="SetUnionControlNetType",
-            category="conditioning/controlnet",
+            category="model/conditioning/controlnet",
             inputs=[
                 io.ControlNet.Input("control_net"),
                 io.Combo.Input("type", options=["auto"] + list(UNION_CONTROLNET_TYPES.keys())),
@@ -38,7 +38,8 @@ class ControlNetInpaintingAliMamaApply(io.ComfyNode):
     def define_schema(cls):
         return io.Schema(
             node_id="ControlNetInpaintingAliMamaApply",
-            category="conditioning/controlnet",
+            search_aliases=["masked controlnet"],
+            category="model/conditioning/controlnet",
             inputs=[
                 io.Conditioning.Input("positive"),
                 io.Conditioning.Input("negative"),
@@ -47,8 +48,8 @@ class ControlNetInpaintingAliMamaApply(io.ComfyNode):
                 io.Image.Input("image"),
                 io.Mask.Input("mask"),
                 io.Float.Input("strength", default=1.0, min=0.0, max=10.0, step=0.01),
-                io.Float.Input("start_percent", default=0.0, min=0.0, max=1.0, step=0.001),
-                io.Float.Input("end_percent", default=1.0, min=0.0, max=1.0, step=0.001),
+                io.Float.Input("start_percent", default=0.0, min=0.0, max=1.0, step=0.001, advanced=True),
+                io.Float.Input("end_percent", default=1.0, min=0.0, max=1.0, step=0.001, advanced=True),
             ],
             outputs=[
                 io.Conditioning.Output(display_name="positive"),

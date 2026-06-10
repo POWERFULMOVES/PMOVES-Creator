@@ -91,6 +91,7 @@ class CLIPMergeSimple:
 
 
 class CLIPSubtract:
+    SEARCH_ALIASES = ["clip difference", "text encoder subtract"]
     @classmethod
     def INPUT_TYPES(s):
         return {"required": { "clip1": ("CLIP",),
@@ -113,6 +114,7 @@ class CLIPSubtract:
 
 
 class CLIPAdd:
+    SEARCH_ALIASES = ["combine clip"]
     @classmethod
     def INPUT_TYPES(s):
         return {"required": { "clip1": ("CLIP",),
@@ -225,6 +227,7 @@ def save_checkpoint(model, clip=None, vae=None, clip_vision=None, filename_prefi
     comfy.sd.save_checkpoint(output_checkpoint, model, clip, vae, clip_vision, metadata=metadata, extra_keys=extra_keys)
 
 class CheckpointSave:
+    SEARCH_ALIASES = ["save model", "export checkpoint", "merge save"]
     def __init__(self):
         self.output_dir = folder_paths.get_output_directory()
 
@@ -273,8 +276,8 @@ class CLIPSave:
                 for x in extra_pnginfo:
                     metadata[x] = json.dumps(extra_pnginfo[x])
 
-        comfy.model_management.load_models_gpu([clip.load_model()], force_patch_weights=True)
-        clip_sd = clip.get_sd()
+        clip.load_model()
+        clip_sd = clip.state_dict_for_saving()
 
         for prefix in ["clip_l.", "clip_g.", "clip_h.", "t5xxl.", "pile_t5xl.", "mt5xl.", "umt5xxl.", "t5base.", "gemma2_2b.", "llama.", "hydit_clip.", ""]:
             k = list(filter(lambda a: a.startswith(prefix), clip_sd.keys()))
@@ -337,6 +340,7 @@ class VAESave:
         return {}
 
 class ModelSave:
+    SEARCH_ALIASES = ["export model", "checkpoint save"]
     def __init__(self):
         self.output_dir = folder_paths.get_output_directory()
 
