@@ -27,6 +27,17 @@ lint.ignore = ["E501", "E722", "E731", "E712", "E402", "E741"]
 
 exclude = ["*.ipynb", "**/generated/*.pyi"]
 
+# Vendored upstream ComfyUI tree — linted by upstream, not PMOVES-owned.
+# Keeps `ruff check .` scoped to PMOVES code (chit, blueprints, middleware,
+# pmoves_*) and prevents upstream lint debt from blocking fork-sync PRs.
+extend-exclude = [
+  "comfy", "comfy_api", "comfy_api_nodes", "comfy_config", "comfy_execution", "comfy_extras",
+  "app", "api_server", "custom_nodes", "script_examples", "alembic_db",
+  "comfyui_version.py", "cuda_malloc.py", "execution.py", "folder_paths.py",
+  "hook_breaker_ac10a0.py", "latent_preview.py", "main.py", "node_helpers.py",
+  "nodes.py", "protocol.py", "server.py",
+]
+
 [tool.pylint]
 master.py-version = "3.10"
 master.extension-pkg-allow-list = [
