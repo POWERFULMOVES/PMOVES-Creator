@@ -15,14 +15,14 @@ Usage:
 
     # Get full service info
     info = await get_service_info("hirag-v2")
-    print(f"{info.name}: {info.health_check_url}")
+    print(f"{info.name}: {info.health_check_url}")  # noqa: T201
 """
 
 import asyncio
 import os
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Optional
+from typing import Any
 
 
 class ServiceTier(str, Enum):
@@ -149,7 +149,7 @@ async def get_service_info(
         return ServiceInfo(
             slug=slug,
             name=f"{slug} (from env)",
-            description=f"Service URL from environment variable",
+            description="Service URL from environment variable",
             health_check_url=env_url,
             default_port=default_port,
             tier=ServiceTier.API,  # Default tier
@@ -160,7 +160,7 @@ async def get_service_info(
     return ServiceInfo(
         slug=slug,
         name=f"{slug} (fallback)",
-        description=f"Service resolved via Docker DNS fallback",
+        description="Service resolved via Docker DNS fallback",
         health_check_url=fallback_url,
         default_port=default_port,
         tier=ServiceTier.API,
@@ -258,16 +258,16 @@ if __name__ == "__main__":
     async def main():
         # Get service URL
         url = await get_service_url("hirag-v2", default_port=8086)
-        print(f"Hi-RAG URL: {url}")
+        print(f"Hi-RAG URL: {url}")  # noqa: T201
 
         # Check service health
         healthy = await check_service_health("hirag-v2", default_port=8086)
-        print(f"Hi-RAG Healthy: {healthy}")
+        print(f"Hi-RAG Healthy: {healthy}")  # noqa: T201
 
         # Get service info
         info = await get_service_info("agent-zero", default_port=8080)
-        print(f"Service: {info.name}")
-        print(f"Base URL: {info.base_url}")
-        print(f"Health Check: {info.health_check_url}")
+        print(f"Service: {info.name}")  # noqa: T201
+        print(f"Base URL: {info.base_url}")  # noqa: T201
+        print(f"Health Check: {info.health_check_url}")  # noqa: T201
 
     asyncio.run(main())

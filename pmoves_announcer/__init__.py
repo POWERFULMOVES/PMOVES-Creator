@@ -32,9 +32,9 @@ Usage:
 import asyncio
 import json
 import os
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 from enum import Enum
 
 
@@ -181,7 +181,7 @@ class ServiceAnnouncer:
 
             return True
         except Exception as e:
-            print(f"Failed to announce service: {e}")
+            print(f"Failed to announce service: {e}")  # noqa: T201
             return False
 
     async def announce_with_retry(
@@ -317,7 +317,7 @@ if __name__ == "__main__":
             port=8080,
             tier="api",
         )
-        print("Service announced!")
+        print("Service announced!")  # noqa: T201
 
         # Example 2: With metadata
         await announce_service(
@@ -343,7 +343,7 @@ if __name__ == "__main__":
         )
         bg = BackgroundAnnouncer(announcer, interval=30)
         await bg.start()
-        print("Background announcer started (30s interval)")
+        print("Background announcer started (30s interval)")  # noqa: T201
 
         # Keep running...
         await asyncio.sleep(10)

@@ -20,8 +20,7 @@ import os
 import asyncio
 
 try:
-    from fastapi import APIRouter, HTTPException
-    from fastapi.responses import JSONResponse
+    from fastapi import APIRouter, FastAPI
     FASTAPI_AVAILABLE = True
 except ImportError:
     FASTAPI_AVAILABLE = False
@@ -154,7 +153,7 @@ class HealthChecker:
                         all_healthy = False
                     else:
                         some_degraded = True
-            except Exception as e:
+            except Exception:
                 results[check.status_key()] = False
                 if check.required:
                     all_healthy = False
@@ -236,7 +235,6 @@ if FASTAPI_AVAILABLE:
 
     def create_health_app(service_name: str = None) -> "FastAPI":
         """Create a minimal FastAPI app with health check."""
-        from fastapi import FastAPI
         app = FastAPI(title=service_name or "PMOVES Service")
         app.include_router(health_check_router)
         return app
@@ -267,6 +265,6 @@ if __name__ == "__main__":
 
         # Run checks
         status = await checker.check_all()
-        print(status)
+        print(status)  # noqa: T201
 
     asyncio.run(example_usage())
